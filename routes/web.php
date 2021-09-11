@@ -41,5 +41,18 @@ $router->group(
                 $router->delete('/courses/{id}', ['uses' => 'CourseController@destroy', 'as' => 'courses.destroy']);
             }
         );
+
+        $router->get('/packages', ['uses' => 'PackageController@index', 'as' => 'packages']);
+
+        $router->group(
+            ['middleware' => 'role:admin'],
+            function () use ($router) {
+
+                $router->post('/packages', ['uses' => 'PackageController@store', 'as' => 'packages.store']);
+                $router->get('/packages/{id}', ['uses' => 'PackageController@show', 'as' => 'packages.show']);
+                $router->put('/packages/{id}', ['uses' => 'PackageController@update', 'as' => 'packages.update']);
+                $router->delete('/packages/{id}', ['uses' => 'PackageController@destroy', 'as' => 'packages.destroy']);
+            }
+        );
     }
 );
