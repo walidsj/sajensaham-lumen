@@ -22,36 +22,47 @@ $router->get('/', function () {
 });
 
 
-$router->post('/register', ['uses' => 'AuthController@register', 'as' => 'auth.register']);
-$router->post('/login', ['uses' => 'AuthController@login', 'as' => 'auth.login']);
+$router->post('/register', ['uses' => 'AuthController@register']);
+$router->post('/login', ['uses' => 'AuthController@login']);
 
 $router->group(
     ['middleware' => 'jwt'],
     function () use ($router) {
 
-        $router->get('/courses', ['uses' => 'CourseController@index', 'as' => 'courses']);
+        $router->get('/me', ['uses' => 'AuthController@show']);
+
+        /** Course's routes */
+        $router->get('/courses', ['uses' => 'CourseController@index']);
+        $router->get('/courses/{course_id}', ['uses' => 'CourseController@show']);
+        $router->get('/courses/{course_id}/packages', ['uses' => 'CourseController@getAllPackages']);
+        $router->get('/courses/{course_id}/packages/{package_id}', ['uses' => 'CourseController@getPackage']);
+
+        /** Package's routes */
+        $router->get('/packages', ['uses' => 'PackageController@index']);
+        $router->get('/packages/{id}', ['uses' => 'PackageController@show']);
+
+        /** Sale's routes */
+        $router->get('/sales', ['uses' => 'SaleController@index']);
+        $router->get('/sales/{id}', ['uses' => 'SaleController@show']);
 
         $router->group(
             ['middleware' => 'role:admin'],
             function () use ($router) {
 
-                $router->post('/courses', ['uses' => 'CourseController@store', 'as' => 'courses.store']);
-                $router->get('/courses/{id}', ['uses' => 'CourseController@show', 'as' => 'courses.show']);
-                $router->put('/courses/{id}', ['uses' => 'CourseController@update', 'as' => 'courses.update']);
-                $router->delete('/courses/{id}', ['uses' => 'CourseController@destroy', 'as' => 'courses.destroy']);
-            }
-        );
+                /** Course's routes */
+                $router->post('/courses', ['uses' => 'CourseController@store']);
+                $router->put('/courses/{course_id}', ['uses' => 'CourseController@update']);
+                $router->delete('/courses/{course_id}', ['uses' => 'CourseController@destroy']);
 
-        $router->get('/packages', ['uses' => 'PackageController@index', 'as' => 'packages']);
+                /** Package's routes */
+                $router->post('/packages', ['uses' => 'PackageController@store']);
+                $router->put('/packages/{id}', ['uses' => 'PackageController@update']);
+                $router->delete('/packages/{id}', ['uses' => 'PackageController@destroy']);
 
-        $router->group(
-            ['middleware' => 'role:admin'],
-            function () use ($router) {
-
-                $router->post('/packages', ['uses' => 'PackageController@store', 'as' => 'packages.store']);
-                $router->get('/packages/{id}', ['uses' => 'PackageController@show', 'as' => 'packages.show']);
-                $router->put('/packages/{id}', ['uses' => 'PackageController@update', 'as' => 'packages.update']);
-                $router->delete('/packages/{id}', ['uses' => 'PackageController@destroy', 'as' => 'packages.destroy']);
+                /** Sale's routes */
+                $router->post('/sales', ['uses' => 'SaleController@store']);
+                $router->put('/sales/{id}', ['uses' => 'SaleController@update']);
+                $router->delete('/sales/{id}', ['uses' => 'SaleController@destroy']);
             }
         );
     }

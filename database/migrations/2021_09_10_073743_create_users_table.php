@@ -18,7 +18,7 @@ class CreateUsersTable extends Migration
             $table->string('email')->unique();
             $table->string('password');
             $table->string('name');
-            $table->string('telegram_name');
+            $table->string('telegram_name')->nullable();
             $table->string('telegram_id')->unique();
             $table->string('whatsapp')->unique();
             $table->enum('role', ['member', 'marketing', 'admin'])->default('member');

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Course;
+use App\Models\Package;
 use Illuminate\Http\Request;
 
 /** 
@@ -35,9 +36,9 @@ class CourseController extends Controller
      * @return void
      */
 
-    public function show($id)
+    public function show($course_id)
     {
-        $course = Course::findOrFail($id);
+        $course = Course::findOrFail($course_id);
 
         return response()->json([
             'message' => 'A course found.',
@@ -73,7 +74,7 @@ class CourseController extends Controller
      * @return void
      */
 
-    public function update(Request $request, $id)
+    public function update(Request $request, $course_id)
     {
         $this->validate($request, [
             'title' => 'max:255',
@@ -81,7 +82,7 @@ class CourseController extends Controller
             'status' => 'in:active,inactive'
         ]);
 
-        $course = Course::findOrFail($id);
+        $course = Course::findOrFail($course_id);
         $course->update($request->all());
 
         return response()->json([
@@ -97,14 +98,46 @@ class CourseController extends Controller
      * @return void
      */
 
-    public function destroy($id)
+    public function destroy($course_id)
     {
-        $course = Course::findOrFail($id);
-        $course->delete($id);
+        $course = Course::findOrFail($course_id);
+        $course->delete($course_id);
 
         return response()->json([
             'message' => 'Course successfully deleted.',
             'data' => $course
+        ]);
+    }
+
+    /** ====================================================
+     ** Addition for packages.
+     *  Follow best practice of API routes.
+     *  ================================================= */
+
+    /**
+     ** Get an course data.
+     * 
+     * @param id
+     * @return void
+     */
+
+    public function getAllPackages($course_id)
+    {
+        $packages = Package::where('course_id', $course_id)->get();
+
+        return response()->json([
+            'message' => 'Packages found.',
+            'data' => $packages
+        ]);
+    }
+
+    public function getPackage($course_id, $package_id)
+    {
+        $packages = Package::where('course_id', $course_id)->where('id', $package_id)->first();
+
+        return response()->json([
+            'message' => 'Package found.',
+            'data' => $packages
         ]);
     }
 }

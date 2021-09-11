@@ -20,7 +20,7 @@ class AuthController extends Controller
         $payload = [
             'iss' => env('APP_NAME', 'Lumen'),
             'sub' => $user->id,
-            'data' => $user,
+            'user' => $user,
             'iat' => time(),
             'exp' => time() + 3600 * 24 * 7 //token expiry 7 days
         ];
@@ -40,23 +40,26 @@ class AuthController extends Controller
             'email' => 'required|email|unique:users|max:255',
             'password' => 'required',
             'name' => 'required|max:255',
-            'telegram_name' => 'required|max:255',
+            'whatsapp' => 'required|unique:users|max:255',
             'telegram_id' => 'required|unique:users|max:255',
-            'whatsapp' => 'required|unique:users|max:255'
+            'telegram_name' => 'max:255'
         ], [
             'unique' => 'The :attribute has been registered.'
         ]);
 
         $request = new Request($request->all());
         $request->merge([
-            'password' => Hash::make($request->password),
+            'password' => Hash::make($request->password)
+        ]);
+        $request->merge([
+            'role' => 'member'
         ]);
 
         $user = User::create($request->all());
 
         return response()->json([
             'message' => 'Register successfull.',
-            'data' => $user,
+            'user' => $user,
             'token' => $this->jwt($user)
         ]);
     }
@@ -93,8 +96,16 @@ class AuthController extends Controller
 
         return response()->json([
             'message' => 'Login successfull.',
-            'data' => $user,
+            'user' => $user,
             'token' => $this->jwt($user)
+        ]);
+    }
+
+    public function show(Request $request)
+    {
+        return response()->json([
+            'message' => 'Me found.',
+            'me' => $request->auth
         ]);
     }
 }
