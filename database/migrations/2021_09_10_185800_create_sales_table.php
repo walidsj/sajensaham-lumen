@@ -21,6 +21,7 @@ class CreateSalesTable extends Migration
             $table->enum('paid_status', ['unpaid', 'paid'])->default('unpaid');
             $table->string('paid_img')->nullable();
             $table->dateTimeTz('paid_at')->nullable();
+            $table->enum('confirm_status', ['unconfirmed', 'confirmed'])->default('unconfirmed');
             $table->timestamps();
         });
     }
