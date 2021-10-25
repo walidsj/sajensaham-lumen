@@ -3,30 +3,38 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Firebase\JWT\JWT;
 
 class AuthController extends Controller
 {
+
     /**
      ** Encode json web token.
      *  https://chalidade.medium.com/authentication-token-for-lumen-with-php-jwt-5686f796f8d5
      * 
      *  @return void
      */
-    private function jwt(User $user)
+    private function jwt(User $user, $remember_me = 30)
     {
         $payload = [
             'iss' => env('APP_NAME', 'Lumen'),
             'sub' => $user->id,
-            'user' => $user,
+            'name' => $user->name,
+            'whatsapp' => $user->whatsapp,
+            'email' => $user->email,
+            'telegram_name' => $user->telegram_name,
+            'telegram_id' => $user->telegram_id,
+            'created_at' => Carbon::parse($user->created_at)->timestamp,
             'iat' => time(),
-            'exp' => time() + 3600 * 24 * 7 //token expiry 7 days
+            'exp' => time() + 3600 * 24 * $remember_me //token expiry X-days
         ];
 
-        return JWT::encode($payload, env('JWT_KEY', 'walidganteng'));
+        return JWT::encode($payload, env('APP_KEY', 'walidganteng'));
     }
+
 
     /**
      ** Register an account.
@@ -58,11 +66,13 @@ class AuthController extends Controller
         $user = User::create($request->all());
 
         return response()->json([
+            'success' => true,
             'message' => 'Register successfull.',
-            'user' => $user,
+            'data' => $user,
             'token' => $this->jwt($user)
         ]);
     }
+
 
     /**
      ** Login an account.
@@ -89,23 +99,38 @@ class AuthController extends Controller
         }
 
         if (empty($user))
-            return response()->json(['message' => 'Account is not registered.'], 400);
+            return response()->json([
+                'success' => false,
+                'message' => 'Account is not registered.'
+            ], 400);
 
         if (!Hash::check($request->password, $user->password))
-            return response()->json(['message' => 'Your password is wrong.'], 422);
+            return response()->json([
+                'success' => false,
+                'message' => 'Your password is wrong.'
+            ], 422);
 
         return response()->json([
+            'success' => true,
             'message' => 'Login successfull.',
-            'user' => $user,
+            'data' => $user,
             'token' => $this->jwt($user)
         ]);
     }
 
+
+    /**
+     ** Show an account.
+     * 
+     * @return void
+     */
+
     public function show(Request $request)
     {
         return response()->json([
+            'success' => true,
             'message' => 'Me found.',
-            'me' => $request->auth
+            'data' => $request->auth
         ]);
     }
 }

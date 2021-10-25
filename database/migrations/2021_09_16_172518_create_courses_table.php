@@ -17,7 +17,10 @@ class CreateCoursesTable extends Migration
             $table->id();
             $table->string('title');
             $table->text('description');
+            $table->string('image')->nullable();
             $table->enum('status', ['active', 'inactive'])->default('inactive');
+            $table->string('information')->nullable();
+            $table->string('link')->nullable();
             $table->timestamps();
         });
     }

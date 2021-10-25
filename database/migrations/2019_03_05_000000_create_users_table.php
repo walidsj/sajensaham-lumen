@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
 class CreateUsersTable extends Migration
 {
@@ -22,6 +22,7 @@ class CreateUsersTable extends Migration
             $table->string('telegram_id')->unique();
             $table->string('whatsapp')->unique();
             $table->enum('role', ['member', 'marketing', 'admin'])->default('member');
+            $table->rememberToken();
             $table->timestamps();
         });
     }

@@ -17,8 +17,22 @@
  * https://lumen.laravel.com/docs/8.x
  */
 
-$router->get('/', function () {
-    return response()->json(['message' => 'Your API is ready 🙌']);
+$router->get('/', function ()  use ($router) {
+    return response()->json([
+        'message' => 'Your API is ready 🙌',
+        'app' => [
+            'name' => env('APP_NAME'),
+            'url' => env('APP_URL'),
+            'environment' => env('APP_ENV'),
+            'version' => env('APP_VERSION'),
+            'vendor' => $router->app->version(),
+            'timezone' => env('APP_TIMEZONE')
+        ],
+        'author' => [
+            'name' => 'Moh. Walid Arkham Sani',
+            'url' => 'https://walid.id',
+        ]
+    ]);
 });
 
 

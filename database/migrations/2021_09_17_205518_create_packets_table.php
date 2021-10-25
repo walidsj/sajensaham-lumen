@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePackagesTable extends Migration
+class CreatePacketsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,19 @@ class CreatePackagesTable extends Migration
      */
     public function up()
     {
-        Schema::create('packages', function (Blueprint $table) {
+        Schema::create('packets', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('course_id')->unsigned();
+            $table->foreignId('course_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('user_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
             $table->string('title');
+            $table->string('description')->nullable();
             $table->bigInteger('price')->unsigned();
+            $table->bigInteger('price_promo')->unsigned()->nullable();
+            $table->bigInteger('marketing_fee')->unsigned();
             $table->bigInteger('duration')->unsigned();
             $table->enum('status', ['active', 'inactive'])->default('inactive');
+            $table->string('information')->nullable();
+            $table->string('link')->nullable();
             $table->timestamps();
         });
     }
@@ -31,6 +37,6 @@ class CreatePackagesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('packages');
+        Schema::dropIfExists('packets');
     }
 }
