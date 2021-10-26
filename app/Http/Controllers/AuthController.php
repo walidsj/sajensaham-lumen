@@ -45,15 +45,32 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         $this->validate($request, [
-            'email' => 'required|email|unique:users|max:255',
+            'email' => 'required|email|max:255',
             'password' => 'required',
             'name' => 'required|max:255',
-            'whatsapp' => 'required|unique:users|max:255',
-            'telegram_id' => 'required|unique:users|max:255',
+            'whatsapp' => 'required|max:255',
+            'telegram_id' => 'required|max:255',
             'telegram_name' => 'max:255'
-        ], [
-            'unique' => 'The :attribute has been registered.'
         ]);
+
+        if (User::where('email', $request->email)->first())
+            return response()->json([
+                'success' => false,
+                'message' => 'Alamat email telah terdaftar.'
+            ], 422);
+
+        if (User::where('whatsapp', $request->whatsapp)->first())
+            return response()->json([
+                'success' => false,
+                'message' => 'No. WhatsApp telah terdaftar.'
+            ], 422);
+
+        if (User::where('telegram_id', $request->telegram_id)->first())
+            return response()->json([
+                'success' => false,
+                'message' => 'ID Telegram telah terdaftar.'
+            ], 422);
+
 
         $request = new Request($request->all());
         $request->merge([
@@ -84,7 +101,7 @@ class AuthController extends Controller
     {
         $user = [];
 
-        if ($request->has('whatsapp')) {
+        if (!empty($request->whatsapp) && $request->has('whatsapp')) {
             $this->validate($request, [
                 'whatsapp' => 'required',
                 'password' => 'required'

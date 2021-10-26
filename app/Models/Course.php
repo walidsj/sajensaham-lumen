@@ -15,4 +15,14 @@ class Course extends Model
     protected $fillable = [
         'title', 'description', 'status'
     ];
+
+    public function packets()
+    {
+        return $this->hasMany(Packet::class);
+    }
+
+    public function sales()
+    {
+        return $this->hasManyThrough(Sale::class, Packet::class);
+    }
 }

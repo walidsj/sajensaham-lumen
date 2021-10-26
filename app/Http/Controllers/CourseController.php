@@ -21,7 +21,9 @@ class CourseController extends Controller
 
     public function index()
     {
-        $courses = Course::all();
+        $courses = Course::withCount(['packets', 'sales'])->with(['packets' => function ($query) {
+            $query->orderBy('packets.price', 'asc');
+        }])->get();
 
         return response()->json([
             'message' => 'Courses found.',
