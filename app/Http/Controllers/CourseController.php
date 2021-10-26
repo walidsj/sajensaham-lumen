@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Course;
-use App\Models\Package;
+use App\Models\Packet;
 use Illuminate\Http\Request;
 
 /** 
@@ -112,7 +112,7 @@ class CourseController extends Controller
     }
 
     /** ====================================================
-     ** Addition for packages.
+     ** Addition for packets.
      *  Follow best practice of API routes.
      *  ================================================= */
 
@@ -123,23 +123,23 @@ class CourseController extends Controller
      * @return void
      */
 
-    public function getAllPackages($course_id)
+    public function getAllPackets($course_id)
     {
-        $packages = Package::where('course_id', $course_id)->get();
+        $packets = Packet::where('course_id', $course_id)->get();
 
         return response()->json([
-            'message' => 'Packages found.',
-            'data' => $packages
+            'message' => 'Packets found.',
+            'data' => $packets
         ]);
     }
 
-    public function getPackage($course_id, $package_id)
+    public function getPacket($course_id, $packet_id)
     {
-        $packages = Package::where('course_id', $course_id)->where('id', $package_id)->first();
+        $packets = Packet::where('course_id', $course_id)->where('id', $packet_id)->first();
 
         return response()->json([
-            'message' => 'Package found.',
-            'data' => $packages
+            'message' => 'Packet found.',
+            'data' => $packets
         ]);
     }
 }

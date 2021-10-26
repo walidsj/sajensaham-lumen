@@ -39,17 +39,17 @@ $router->get('/', function ()  use ($router) {
 $router->post('/register', ['uses' => 'AuthController@register']);
 $router->post('/login', ['uses' => 'AuthController@login']);
 
+/** Course's routes */
+$router->get('/courses', ['uses' => 'CourseController@index']);
+$router->get('/courses/{course_id}', ['uses' => 'CourseController@show']);
+$router->get('/courses/{course_id}/packets', ['uses' => 'CourseController@getAllPackets']);
+$router->get('/courses/{course_id}/packets/{packet_id}', ['uses' => 'CourseController@getPacket']);
+
 $router->group(
     ['middleware' => 'jwt'],
     function () use ($router) {
 
         $router->get('/me', ['uses' => 'AuthController@show']);
-
-        /** Course's routes */
-        $router->get('/courses', ['uses' => 'CourseController@index']);
-        $router->get('/courses/{course_id}', ['uses' => 'CourseController@show']);
-        $router->get('/courses/{course_id}/packages', ['uses' => 'CourseController@getAllPackages']);
-        $router->get('/courses/{course_id}/packages/{package_id}', ['uses' => 'CourseController@getPackage']);
 
         /** Package's routes */
         $router->get('/packages', ['uses' => 'PackageController@index']);
