@@ -125,7 +125,7 @@ class CourseController extends Controller
 
     public function getAllPackets($course_id)
     {
-        $packets = Packet::where('course_id', $course_id)->get();
+        $packets = Packet::where('course_id', $course_id)->orderBy('price', 'asc')->get();
 
         return response()->json([
             'message' => 'Packets found.',

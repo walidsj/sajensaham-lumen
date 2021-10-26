@@ -15,4 +15,9 @@ class Packet extends Model
     protected $fillable = [
         'course_id', 'title', 'price', 'duration', 'status'
     ];
+
+    public function sales()
+    {
+        return $this->hasMany(Sale::class);
+    }
 }
